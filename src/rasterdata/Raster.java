@@ -1,5 +1,6 @@
 package rasterdata;
 
+import java.awt.*;
 import java.util.Optional;
 
 /**
@@ -33,4 +34,16 @@ public interface Raster {
      * @return returns Optional of color if address of pixel is valid
      */
     Optional<Integer> getColor(int x, int y);
+
+    /**
+     * Draw new image on element
+     * @param graphics element on which image will be rendered
+     */
+    void present(Graphics graphics);
+
+    /**
+     * Redraw whole image with selected color
+     * @param background color by which element will be repainted
+     */
+    void clear(int background);
 }

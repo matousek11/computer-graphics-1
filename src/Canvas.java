@@ -1,10 +1,11 @@
+import rasterdata.Raster;
+import rasterdata.RasterAdapter;
+
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,8 +20,8 @@ import javax.swing.WindowConstants;
  */
 public class Canvas {
     private JFrame frame;
-    private JPanel panel;
-    private BufferedImage img;
+    private final JPanel panel;
+    private final Raster raster;
     private int positionX = 0;
     private int positionY = 0;
 
@@ -32,7 +33,7 @@ public class Canvas {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        raster = new RasterAdapter(width, height);
 
         // anonymní třída
         panel = new JPanel() {
@@ -41,7 +42,7 @@ public class Canvas {
             @Override
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                present(g);
+                raster.present(g);
             }
         };
 
@@ -62,8 +63,9 @@ public class Canvas {
                         positionX += 20;
                         break;
                 }
-                clear();
-                img.setRGB(positionX, positionY, 0xffff00);
+
+                raster.clear(0x000000);
+                raster.setColor(positionX, positionY, 0xffff00);
                 panel.repaint();
             }
         });
@@ -75,24 +77,7 @@ public class Canvas {
         frame.setVisible(true);
     }
 
-    public void clear() {
-        Graphics gr = img.getGraphics();
-        gr.setColor(new Color(0x2f2f2f));
-        gr.fillRect(0, 0, img.getWidth(), img.getHeight());
-    }
-
-    public void present(Graphics graphics) {
-        graphics.drawImage(img, 0, 0, null);
-    }
-
-    public void draw() {
-        clear();
-
-        img.setRGB(positionX, positionY, 0xffff00);
-    }
-
     public void start() {
-        draw();
         panel.repaint();
     }
 
