@@ -1,11 +1,10 @@
 import rasterdata.Raster;
 import rasterdata.RasterAdapter;
+import rasterops.Liner;
+import rasterops.TrivialLiner;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,11 +21,14 @@ public class Canvas {
     private JFrame frame;
     private final JPanel panel;
     private final Raster raster;
+    private Liner liner;
     private int positionX = 0;
     private int positionY = 0;
 
     public Canvas(int width, int height) {
         frame = new JFrame();
+
+        liner = new TrivialLiner();
 
         frame.setLayout(new BorderLayout());
         frame.setTitle("UHK FIM PGRF : " + this.getClass().getName());
@@ -35,7 +37,6 @@ public class Canvas {
 
         raster = new RasterAdapter(width, height);
 
-        // anonymní třída
         panel = new JPanel() {
             private static final long serialVersionUID = 1L;
 
@@ -46,26 +47,20 @@ public class Canvas {
             }
         };
 
-        frame.addKeyListener(new KeyAdapter() {
+        panel.addMouseListener(new MouseAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP:
-                        positionY -= 20;
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        positionY += 20;
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        positionX -= 20;
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        positionX += 20;
-                        break;
-                }
+            public void mousePressed(MouseEvent e) {
 
-                raster.clear(0x000000);
-                raster.setColor(positionX, positionY, 0xffff00);
+                positionX = e.getX();
+                positionY = e.getY();
+            }
+        });
+
+        panel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                clear();
+                liner.draw(raster, positionX, positionY, e.getX(), e.getY(), 0xffff00);
                 panel.repaint();
             }
         });
@@ -79,6 +74,10 @@ public class Canvas {
 
     public void start() {
         panel.repaint();
+    }
+
+    public void clear() {
+        raster.clear(0x000000);
     }
 
     public static void main(String[] args) {
