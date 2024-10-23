@@ -62,3 +62,9 @@ public class TrivialLiner implements Liner {
         }
     }
 }
+
+    @Override
+    public void draw(Raster raster, Line line) {
+        draw(raster, line.getXStart(), line.getYStart(), line.getXEnd(), line.getYEnd(), line.getColor());
+    }
+}

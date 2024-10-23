@@ -1,5 +1,6 @@
 package rasterops;
 
+import models.Line;
 import rasterdata.Raster;
 
 /**
@@ -16,4 +17,11 @@ public interface Liner {
      * @param color color of line segment
      */
     void draw(Raster raster, double xStart, double yStart, double xEnd, double yEnd, int color);
+
+    /**
+     * Draws a line segment specified by Line onto the given Raster
+     * @param raster raster where the line will be drawn
+     * @param line line which will be rasterized
+     */
+    void draw(Raster raster, Line line);
 }
