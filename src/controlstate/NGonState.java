@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class NGonState extends BaseState {
     private int latestPolygonIndex;
@@ -25,15 +24,10 @@ public class NGonState extends BaseState {
 
     @Override
     public void mousePressed(MouseEvent e, ArrayList<Object> objects) throws Exception {
-        // fill in of object with color
+        // fill in object with color
         if (fWasPressed) {
             fWasPressed = false;
-            Optional<Integer> bgColor = raster.getColor(e.getX(), e.getY());
-
-            if (bgColor.isPresent()) {
-                seedFill.fill(new Point2D(e.getX(), e.getY()), defaultFillInColor, bgColor.get(), raster);
-                panel.repaint();
-            }
+            fillArea(new Point2D(e.getX(), e.getY()), objects);
             return;
         }
 

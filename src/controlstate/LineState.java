@@ -18,13 +18,23 @@ public class LineState extends BaseState {
     }
 
     @Override
-    public void mousePressed(MouseEvent e, ArrayList<Object> objects) {
+    public void mousePressed(MouseEvent e, ArrayList<Object> objects) throws Exception {
+        if (fWasPressed) {
+            fillArea(new Point2D(e.getX(), e.getY()), objects);
+            return;
+        }
+
         positionX = e.getX();
         positionY = e.getY();
     }
 
     @Override
     public void mouseReleased(MouseEvent e, ArrayList<Object> objects) throws Exception {
+        if (fWasPressed) {
+            fWasPressed = false;
+            return;
+        }
+
         Point2D endPoint = shiftIsPressed
                 ? snapLine(new Point2D(positionX, positionY), new Point2D(e.getX(), e.getY()))
                 : new Point2D(e.getX(), e.getY());

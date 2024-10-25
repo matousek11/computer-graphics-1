@@ -1,7 +1,9 @@
 package controlstate;
 
+import models.FillPoint;
 import models.Line;
 import models.Polygon;
+import objectdata.Point2D;
 import rasterdata.Raster;
 import rasterops.Liner;
 import rasterops.Polygoner;
@@ -11,6 +13,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Base class for new control state implementation
@@ -98,9 +101,22 @@ public class BaseState implements State {
                 case Line line:
                     liner.draw(raster, line);
                     break;
+                case FillPoint fillPoint:
+                    seedFill.fill(fillPoint.getFillStartPoint(), fillPoint.getFillColor(), fillPoint.getBgColor(), raster);
+                    break;
                 default:
                     throw new Exception("Unexpected object");
             }
+        }
+    }
+
+    protected void fillArea(Point2D startPoint, ArrayList<Object> objects) throws Exception {
+        Optional<Integer> bgColor = raster.getColor((int) startPoint.getX(), (int) startPoint.getY());
+
+        if (bgColor.isPresent()) {
+            seedFill.fill(new Point2D(startPoint.getX(), startPoint.getY()), defaultFillInColor, bgColor.get(), raster);
+            objects.add(new FillPoint(defaultFillInColor, bgColor.get(), new Point2D(startPoint.getX(), startPoint.getY())));
+            panel.repaint();
         }
     }
 }
