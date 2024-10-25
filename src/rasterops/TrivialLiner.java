@@ -5,7 +5,7 @@ import objectdata.Point2D;
 import rasterdata.Raster;
 
 public class TrivialLiner implements Liner {
-    private FillInCircler fillInCircler;
+    private final FillInCircler fillInCircler;
 
     public TrivialLiner() {
         fillInCircler = new FillInCircler();

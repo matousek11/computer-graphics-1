@@ -21,11 +21,12 @@ public interface Raster {
 
     /**
      * Set color to selected pixel
-     * @param x horizontal position of pixel
-     * @param y vertical position of pixel
+     *
+     * @param x     horizontal position of pixel
+     * @param y     vertical position of pixel
      * @param color color of pixel to be set
      */
-    boolean setColor(int x, int y, int color);
+    void setColor(int x, int y, int color);
 
     /**
      * Read color of selected pixel
@@ -54,5 +55,5 @@ public interface Raster {
      * @param y y axe
      * @return true if axes are within bounds
      */
-    public boolean isWithinBufferedImageBounds(int x, int y);
+    boolean isWithinBufferedImageBounds(int x, int y);
 }

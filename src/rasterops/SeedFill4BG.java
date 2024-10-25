@@ -9,8 +9,6 @@ import java.util.*;
  * Algorithm for filling area recursively
  */
 public class SeedFill4BG {
-    private final Set<Point2D> visited = new HashSet<>();
-
     public void fill(Point2D startingPoint, int fillColor, int bgColor, Raster raster) {
         Deque<Point2D> stack = new LinkedList<>();
         stack.push(startingPoint);

@@ -22,13 +22,12 @@ public class RasterAdapter implements Raster {
     }
 
     @Override
-    public boolean setColor(int x, int y, int color) {
+    public void setColor(int x, int y, int color) {
         if (!isWithinBufferedImageBounds(x, y)) {
-            return false;
+            return;
         }
 
         image.setRGB(x, y, color);
-        return true;
     }
 
     @Override

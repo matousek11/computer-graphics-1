@@ -9,11 +9,9 @@ import rasterdata.Raster;
  * pros:
  * - easy to implement
  * - doesn't have problems with different slopes unlike Trivial liner
- *
  * cons:
  * - it's slower because of dividing
  * - Bresenham’s algorithm is faster
- *
  * Basically it's good for small applications that doesn't require high performance code
  */
 public class DDALiner implements Liner{
