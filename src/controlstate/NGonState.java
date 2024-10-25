@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class NGonState extends BaseState {
     private int latestPolygonIndex;
@@ -23,9 +24,21 @@ public class NGonState extends BaseState {
     }
 
     @Override
-    public void mousePressed(MouseEvent e, ArrayList<Object> objects) {
+    public void mousePressed(MouseEvent e, ArrayList<Object> objects) throws Exception {
+        // fill in of object with color
+        if (fWasPressed) {
+            fWasPressed = false;
+            Optional<Integer> bgColor = raster.getColor(e.getX(), e.getY());
+
+            if (bgColor.isPresent()) {
+                seedFill.fill(new Point2D(e.getX(), e.getY()), defaultFillInColor, bgColor.get(), raster);
+                panel.repaint();
+            }
+            return;
+        }
+
         if (latestPolygonIndex == -1) {
-            objects.add(new Polygon(new ArrayList<>()));
+            objects.add(new Polygon(new ArrayList<>(), oldLineThickness));
             latestPolygonIndex = objects.size() - 1;
         }
 
@@ -41,13 +54,14 @@ public class NGonState extends BaseState {
     public void keyPressed(KeyEvent e, ArrayList<Object> objects) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ENTER:
-                objects.add(new Polygon(new ArrayList<>()));
+                objects.add(new Polygon(new ArrayList<>(), oldLineThickness));
                 latestPolygonIndex = objects.size() - 1;
                 break;
             case KeyEvent.VK_C:
                 latestPolygonIndex = -1;
-                super.keyPressed(e, objects);
                 break;
         }
+
+        super.keyPressed(e, objects);
     }
 }

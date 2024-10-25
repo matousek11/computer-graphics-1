@@ -4,12 +4,13 @@ import controlstate.State;
 
 import rasterdata.Raster;
 import rasterdata.RasterAdapter;
+import rasterops.DDALiner;
 import rasterops.Liner;
 import rasterops.Polygoner;
-import rasterops.TrivialLiner;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.Serial;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -18,28 +19,26 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 /**
- * trida pro kresleni na platno: zobrazeni pixelu
- *
- * @author PGRF FIM UHK
- * @version 2020
+ * Main class for painting on canvas
  */
 public class Canvas {
-    private JFrame frame;
+    private final JFrame frame;
     private final JPanel panel;
     private final Raster raster;
-    private Liner liner;
-    private int latestPolygonIndex = -1;
-    private Polygoner polygoner;
-    private ArrayList<Object> objects;
+    private final Liner liner;
+    private final int latestPolygonIndex = -1;
+    private final Polygoner polygoner;
+    private final ArrayList<Object> objects;
     private State state;
 
     public Canvas(int width, int height) {
-        liner = new TrivialLiner();
+        liner = new DDALiner();
         objects = new ArrayList<>();
         polygoner = new Polygoner();
         raster = new RasterAdapter(width, height);
 
         panel = new JPanel() {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -55,7 +54,7 @@ public class Canvas {
 
         frame = new JFrame();
         frame.setLayout(new BorderLayout());
-        frame.setTitle("UHK FIM PGRF : " + this.getClass().getName());
+        frame.setTitle("UHK FIM PGRF 1 : Lukáš Matoušek");
         frame.setResizable(false);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -66,6 +65,9 @@ public class Canvas {
                     case KeyEvent.VK_X:
                         state = state instanceof LineState ? nGonState : lineState;
                         break;
+                    case KeyEvent.VK_SHIFT:
+
+                        break;
                     default:
                         //
                         break;
@@ -73,24 +75,41 @@ public class Canvas {
 
                 state.keyPressed(e, objects);
             }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                state.keyReleased(e, objects);
+            }
         });
 
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                state.mousePressed(e, objects);
+                try {
+                    state.mousePressed(e, objects);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                state.mouseReleased(e, objects);
+                try {
+                    state.mouseReleased(e, objects);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
         panel.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                state.mouseDragged(e, objects);
+                try {
+                    state.mouseDragged(e, objects);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 

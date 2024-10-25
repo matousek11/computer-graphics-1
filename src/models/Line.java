@@ -6,13 +6,15 @@ public class Line {
     private final int xEnd;
     private final int yEnd;
     private final int color;
+    private final int thickness;
 
-    public Line(int xStart, int yStart, int xEnd, int yEnd, int color) {
+    public Line(int xStart, int yStart, int xEnd, int yEnd, int color, int thickness) {
         this.xStart = xStart;
         this.yStart = yStart;
         this.xEnd = xEnd;
         this.yEnd = yEnd;
         this.color = color;
+        this.thickness = thickness;
     }
 
     public int getXStart() {
@@ -33,5 +35,9 @@ public class Line {
 
     public int getColor() {
         return color;
+    }
+
+    public int getThickness() {
+        return thickness;
     }
 }

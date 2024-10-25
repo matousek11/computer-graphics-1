@@ -15,8 +15,9 @@ public interface Liner {
      * @param xEnd x coordinate of end point of line
      * @param yEnd y coordinate of end point of line
      * @param color color of line segment
+     * @param width width of line segment
      */
-    void draw(Raster raster, double xStart, double yStart, double xEnd, double yEnd, int color);
+    void draw(Raster raster, double xStart, double yStart, double xEnd, double yEnd, int color, int width);
 
     /**
      * Draws a line segment specified by Line onto the given Raster
