@@ -46,4 +46,13 @@ public interface Raster {
      * @param background color by which element will be repainted
      */
     void clear(int background);
+
+    /**
+     * Check whether x and y axe is in bounds of raster.
+     *
+     * @param x x axe
+     * @param y y axe
+     * @return true if axes are within bounds
+     */
+    public boolean isWithinBufferedImageBounds(int x, int y);
 }

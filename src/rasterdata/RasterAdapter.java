@@ -57,7 +57,7 @@ public class RasterAdapter implements Raster {
         graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
     }
 
-    private boolean isWithinBufferedImageBounds(int x, int y) {
+    public boolean isWithinBufferedImageBounds(int x, int y) {
         if (x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight()) {
             return true;
         }

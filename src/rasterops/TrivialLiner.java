@@ -1,11 +1,20 @@
 package rasterops;
 
+import models.Line;
+import objectdata.Point2D;
 import rasterdata.Raster;
 
 public class TrivialLiner implements Liner {
+    private FillInCircler fillInCircler;
+
+    public TrivialLiner() {
+        fillInCircler = new FillInCircler();
+    }
 
     @Override
-    public void draw(Raster raster, double xStart, double yStart, double xEnd, double yEnd, int color) {
+    public void draw(Raster raster, double xStart, double yStart, double xEnd, double yEnd, int color, int width) {
+        float radius = (float) width / 2;
+
         // if line is vertical => to avoid division by 0
         if (xStart == xEnd) {
             if (yEnd < yStart) {
@@ -15,7 +24,11 @@ public class TrivialLiner implements Liner {
             }
 
             for (int y = (int)yStart; y < (int)yEnd; y++) {
-                raster.setColor((int)xStart, y, color);
+                if (width > 1) {
+                    fillInCircler.draw(raster, new Point2D(xStart, y), color, (int) radius);
+                } else {
+                    raster.setColor((int) xStart, y, color);
+                }
             }
 
             return;
@@ -37,10 +50,15 @@ public class TrivialLiner implements Liner {
             // raster line
             for (int x = (int)xStart; x < (xEnd); x++) {
                 int y = (int) (slope * x + q);
-                raster.setColor(x, y, color);
+
+                if (width > 1) {
+                    fillInCircler.draw(raster, new Point2D(x, y), color, (int) radius);
+                } else {
+                    raster.setColor(x, y, color);
+                }
             }
         } else {
-            // switch points if line is heading to down
+            // switch points if line is heading down
             if (yEnd < yStart) {
                 double swap = xStart;
                 xStart = xEnd;
@@ -54,17 +72,22 @@ public class TrivialLiner implements Liner {
             slope = (xEnd - xStart) / (yEnd - yStart);
             double q = xStart - slope * yStart;
 
+
             // raster line
             for (int y = (int)yStart; y < (yEnd); y++) {
                 int x = (int) (slope * y + q);
-                raster.setColor(x, y, color);
+
+                if (width > 1) {
+                    fillInCircler.draw(raster, new Point2D(x, y), color, (int) radius);
+                } else {
+                    raster.setColor(x, y, color);
+                }
             }
         }
     }
-}
 
     @Override
     public void draw(Raster raster, Line line) {
-        draw(raster, line.getXStart(), line.getYStart(), line.getXEnd(), line.getYEnd(), line.getColor());
+        draw(raster, line.getXStart(), line.getYStart(), line.getXEnd(), line.getYEnd(), line.getColor(), line.getThickness());
     }
 }

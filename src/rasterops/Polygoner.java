@@ -14,7 +14,7 @@ public class Polygoner {
             Point2D currentPoint = points.get(i);
             Point2D nextPoint = points.get((i + 1) % points.size());
 
-            liner.draw(raster, currentPoint.getX(), currentPoint.getY(), nextPoint.getX(), nextPoint.getY(), color);
+            liner.draw(raster, currentPoint.getX(), currentPoint.getY(), nextPoint.getX(), nextPoint.getY(), color, polygon.getThickness());
         }
     }
 }
