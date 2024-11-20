@@ -3,13 +3,15 @@ package rasterops;
 import objectdata.Point2D;
 import rasterdata.Raster;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Optional;
 
 /**
- * Algorithm for filling area recursively
+ * Seed fill algorithm that is stopped by edge color.
  */
-public class SeedFill4BG {
-    public void fill(Point2D startingPoint, int fillColor, int bgColor, Raster raster) {
+public class SeedFillEdge {
+    public void fill(Point2D startingPoint, int fillColor, int edgeColor, Raster raster) {
         Deque<Point2D> stack = new LinkedList<>();
         stack.push(startingPoint);
 
@@ -25,7 +27,12 @@ public class SeedFill4BG {
 
             // Check color at the current pixel
             Optional<Integer> currentPixelColor = raster.getColor(x, y);
-            if (currentPixelColor.isEmpty() || (currentPixelColor.get() & 0xffffff) != (bgColor & 0xffffff)) {
+            if (currentPixelColor.isEmpty() || (currentPixelColor.get() & 0xffffff) == (edgeColor & 0xffffff)) {
+                continue;
+            }
+
+            // if pixel is already filled with new color
+            if ((currentPixelColor.get() & 0xffffff) == (fillColor & 0xffffff)) {
                 continue;
             }
 

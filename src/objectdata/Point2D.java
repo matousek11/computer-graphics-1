@@ -16,4 +16,16 @@ public class Point2D {
     public double getY() {
         return y;
     }
+
+    public Point2D translate(double dx, double dy) {
+        return new Point2D(x + dx, y + dy);
+    }
+
+    public Point2D rotate(double angle) {
+        return new Point2D(Math.cos(angle) * x - Math.sin(angle) * y, Math.sin(angle) * x + Math.cos(angle) * y);
+    }
+
+    public Point2D scale(double scale) {
+        return new Point2D(x * scale, y * scale);
+    }
 }

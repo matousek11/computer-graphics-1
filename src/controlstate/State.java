@@ -16,7 +16,7 @@ public interface State {
 
     void mouseDragged(MouseEvent e, ArrayList<Object> objects) throws Exception;
 
-    void keyPressed(KeyEvent e, ArrayList<Object> objects);
+    void keyPressed(KeyEvent e, ArrayList<Object> objects) throws Exception;
 
     void keyReleased(KeyEvent e, ArrayList<Object> objects);
 }

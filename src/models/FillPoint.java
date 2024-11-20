@@ -4,24 +4,30 @@ import objectdata.Point2D;
 
 public class FillPoint {
     private final Integer fillColor;
-    private final Integer bgColor;
+    private final Integer controlColor;
     private final Point2D fillStartPoint;
+    private final boolean isLimitedByEdge;
 
-    public FillPoint(int fillColor, int bgColor, Point2D fillStartPoint) {
+    public FillPoint(int fillColor, int controlColor, Point2D fillStartPoint, boolean isLimitedByEdge) {
         this.fillColor = fillColor;
         this.fillStartPoint = fillStartPoint;
-        this.bgColor = bgColor;
+        this.controlColor = controlColor;
+        this.isLimitedByEdge = isLimitedByEdge;
     }
 
     public int getFillColor() {
         return fillColor;
     }
 
-    public int getBgColor() {
-        return bgColor;
+    public int getControlColor() {
+        return controlColor;
     }
 
     public Point2D getFillStartPoint() {
         return fillStartPoint;
+    }
+
+    public boolean isLimitedByEdge() {
+        return isLimitedByEdge;
     }
 }

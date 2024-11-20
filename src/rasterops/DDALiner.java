@@ -14,7 +14,7 @@ import rasterdata.Raster;
  * - Bresenham’s algorithm is faster
  * Basically it's good for small applications that doesn't require high performance code
  */
-public class DDALiner implements Liner{
+public class DDALiner implements Liner {
     private final FillInCircler fillInCircler;
 
     public DDALiner() {

@@ -1,7 +1,9 @@
 import controlstate.LineState;
 import controlstate.NGonState;
+import controlstate.PolygonState;
 import controlstate.State;
 
+import controlstate.TwoPointRectangleState;
 import rasterdata.Raster;
 import rasterdata.RasterAdapter;
 import rasterops.DDALiner;
@@ -30,12 +32,14 @@ public class Canvas {
     private final Polygoner polygoner;
     private final ArrayList<Object> objects;
     private State state;
+    private int stateNumber;
 
     public Canvas(int width, int height) {
         liner = new DDALiner();
         objects = new ArrayList<>();
         polygoner = new Polygoner();
         raster = new RasterAdapter(width, height);
+        stateNumber = 0;
 
         panel = new JPanel() {
             @Serial
@@ -49,7 +53,9 @@ public class Canvas {
         };
 
         LineState lineState = new LineState(raster, panel, polygoner, liner);
-        NGonState nGonState = new NGonState(raster, panel, latestPolygonIndex, polygoner, liner);
+        PolygonState polygonState = new PolygonState(raster, panel, latestPolygonIndex, polygoner, liner);
+        NGonState nGonState = new NGonState(raster, panel, polygoner, liner);
+        TwoPointRectangleState twoPointRectangleState = new TwoPointRectangleState(raster, panel, polygoner, liner);
         this.state = lineState;
 
         frame = new JFrame();
@@ -63,7 +69,24 @@ public class Canvas {
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_X:
-                        state = state instanceof LineState ? nGonState : lineState;
+                        stateNumber++;
+                        switch (stateNumber) {
+                            case 0:
+                                state = lineState;
+                                break;
+                            case 1:
+                                state = polygonState;
+                                break;
+                            case 2:
+                                state = nGonState;
+                                break;
+                            case 3:
+                                state = twoPointRectangleState;
+                                break;
+                            default:
+                                state = lineState;
+                                stateNumber = 0;
+                        }
                         break;
                     case KeyEvent.VK_SHIFT:
 
@@ -73,7 +96,11 @@ public class Canvas {
                         break;
                 }
 
-                state.keyPressed(e, objects);
+                try {
+                    state.keyPressed(e, objects);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             @Override
@@ -125,6 +152,6 @@ public class Canvas {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Canvas(600, 600).start());
+        SwingUtilities.invokeLater(() -> new Canvas(1500, 1000).start());
     }
 }
