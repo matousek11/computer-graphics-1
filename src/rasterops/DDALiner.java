@@ -35,6 +35,10 @@ public class DDALiner implements Liner {
         double y = yStart;
 
         int radius = width / 2;
+        if (radius > 100) {
+            radius = 1;
+        }
+
         for (int i = 0; i < steps; i++) {
             fillInCircler.draw(raster, new Point2D(x, y), color, radius);
             x += xIncrement;

@@ -1,6 +1,7 @@
 package models;
 
 import objectdata.Point2D;
+import transforms.Mat3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,20 @@ public class Polygon {
             Point2D pointTranslatedToOrigin = new Point2D(point.getX() - center.getX(), point.getY() - center.getY());
             Point2D scaledPoint = pointTranslatedToOrigin.scale(scale);
             newPoints.add(new Point2D(scaledPoint.getX() + center.getX(), scaledPoint.getY() + center.getY()));
+        }
+
+        return new Polygon(newPoints, thickness);
+    }
+
+    public Polygon transform(Mat3 transformation) {
+        Point2D center = getCenterOfPolygon();
+        ArrayList<Point2D> newPoints = new ArrayList<>();
+
+        // Rotate each point around the center
+        for (Point2D point : points) {
+            transforms.Point2D translatedToOrigin = new transforms.Point2D(point.getX() - center.getX(), point.getY() - center.getY());
+            transforms.Point2D rotated = translatedToOrigin.mul(transformation);
+            newPoints.add(new Point2D(rotated.getX() + center.getX(), rotated.getY() + center.getY()));
         }
 
         return new Polygon(newPoints, thickness);

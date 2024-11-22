@@ -37,11 +37,19 @@ public class NGonState extends BaseState {
             return;
         }
 
+        if (eWasPressed) {
+            return;
+        }
+
         Point2D startPoint = new Point2D(positionX, positionY);
         Point2D endPoint = new Point2D(e.getX(), e.getY());
         Line line = new Line(startPoint, endPoint, 0xffffff, 1);
+        int length = (int)line.length();
+        if (length >= getSmallestDistanceToRasterBorder(startPoint)) {
+            length = getSmallestDistanceToRasterBorder(startPoint) - 1;
+        }
 
-        NGon nGon = new NGon(startPoint, line.angle(), (int)line.length(), 5, 1);
+        NGon nGon = new NGon(startPoint, line.angle(), length, 5, 1);
         objects.add(nGon);
 
         repaintObjects(objects);
@@ -54,15 +62,24 @@ public class NGonState extends BaseState {
             return;
         }
 
+        if (eWasPressed) {
+            return;
+        }
+
         clear();
         drawObjects(objects);
 
         Point2D startPoint = new Point2D(positionX, positionY);
         Point2D endPoint = new Point2D(e.getX(), e.getY());
         Line line = new Line(startPoint, endPoint, 0xffffff, 1);
+        int length = (int)line.length();
+        if (length >= getSmallestDistanceToRasterBorder(startPoint)) {
+            length = getSmallestDistanceToRasterBorder(startPoint) - 1;
+        }
 
-        NGon nGon = new NGon(startPoint, line.angle(), (int)line.length(), 5, 1);
+        NGon nGon = new NGon(startPoint, line.angle(), length, 5, 1);
         polygoner.draw(raster, nGon, liner, 0xffffff);
+
         panel.repaint();
     }
 
@@ -102,5 +119,16 @@ public class NGonState extends BaseState {
         }
 
         super.keyPressed(e, objects);
+    }
+
+    private int getSmallestDistanceToRasterBorder(Point2D point) {
+        // Calculate distances to the four edges
+        int distanceToLeft = (int)point.getX();
+        int distanceToRight = raster.getWidth() - (int)point.getX();
+        int distanceToTop = (int)point.getY();
+        int distanceToBottom = raster.getHeight() - (int)point.getY();
+
+        // Return the minimum distance
+        return Math.min(Math.min(distanceToLeft, distanceToRight), Math.min(distanceToTop, distanceToBottom));
     }
 }

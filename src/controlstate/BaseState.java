@@ -5,6 +5,7 @@ import models.Line;
 import models.NGon;
 import models.Polygon;
 import objectdata.Point2D;
+import objectops.SutherlandHodgman;
 import rasterdata.Raster;
 import rasterops.Liner;
 import rasterops.Polygoner;
@@ -15,6 +16,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,6 +32,7 @@ public class BaseState implements State {
     protected boolean shiftIsPressed = false;
     protected boolean fWasPressed = false;
     protected boolean eWasPressed = false;
+    protected boolean vWasPressed = false;
     protected int numberOfClicks = 0;
     protected int edgeColor = 0xffffff;
     protected int defaultBgColor = 0x000000;
@@ -37,6 +40,8 @@ public class BaseState implements State {
     protected int defaultFillInColor = 0xffffff;
     protected int oldLineThickness = 3;
     protected int newLineThickness = 6;
+    private final Polygon cuttingPolygon;
+    protected final SutherlandHodgman sutherlandHodgman;
 
 
     public BaseState(Raster raster, JPanel panel, Polygoner polygoner, Liner liner) {
@@ -46,6 +51,14 @@ public class BaseState implements State {
         this.liner = liner;
         this.seedFillBg = new SeedFill4Bg();
         this.seedFillEdge = new SeedFillEdge();
+        this.sutherlandHodgman = new SutherlandHodgman();
+
+        List<Point2D> cuttingPoints = new ArrayList<>();
+        cuttingPoints.add(new Point2D(20, 20));
+        cuttingPoints.add(new Point2D(20, 800));
+        cuttingPoints.add(new Point2D(800, 800));
+        cuttingPoints.add(new Point2D(800, 20));
+        cuttingPolygon = new Polygon(cuttingPoints, 5);
     }
 
     @Override
@@ -81,6 +94,10 @@ public class BaseState implements State {
                 fWasPressed = false;
                 numberOfClicks = 0;
                 break;
+            case KeyEvent.VK_V:
+                vWasPressed = !vWasPressed;
+                repaintObjects(objects);
+                break;
             case KeyEvent.VK_SHIFT:
                 shiftIsPressed = true;
                 break;
@@ -103,15 +120,33 @@ public class BaseState implements State {
      * @throws Exception Is thrown when renderer doesn't know object
      */
     protected void drawObjects(ArrayList<Object> objects) throws Exception {
+        if (vWasPressed) {
+            polygoner.draw(raster, cuttingPolygon, liner, 0xff0000);
+        }
+
         for (Object object : objects) {
             switch (object) {
                 case NGon nGon:
+                    if (vWasPressed) {
+                        Polygon cuttedPolygon = sutherlandHodgman.cut(cuttingPolygon, nGon);
+                        polygoner.draw(raster, cuttedPolygon, liner, defaultObjectColor);
+                        continue;
+                    }
+
                     polygoner.draw(raster, nGon, liner, defaultObjectColor);
                     break;
                 case Polygon polygon:
+                    if (vWasPressed) {
+                        polygon = sutherlandHodgman.cut(cuttingPolygon, polygon);
+                    }
                     polygoner.draw(raster, polygon, liner, defaultObjectColor);
                     break;
                 case Line line:
+                    if (vWasPressed) {
+                        Polygon cuttedPolygon = sutherlandHodgman.cut(cuttingPolygon, new Polygon(line.getPoints(), line.getThickness()));
+                        polygoner.draw(raster, cuttedPolygon, liner, defaultFillInColor);
+                        continue;
+                    }
                     liner.draw(raster, line);
                     break;
                 case FillPoint fillPoint:
@@ -176,8 +211,6 @@ public class BaseState implements State {
 
             if (numberOfClicks == 2) {
                 fillAreaByEdge(new Point2D(fillPoint.getX(), fillPoint.getY()), objects);
-                numberOfClicks = 0;
-                eWasPressed = false;
             }
             return true;
         }
@@ -195,6 +228,11 @@ public class BaseState implements State {
         clear();
         drawObjects(objects);
         panel.repaint();
+
+        if (eWasPressed && numberOfClicks == 2) {
+            eWasPressed = false;
+            numberOfClicks = 0;
+        }
     }
 
     /**

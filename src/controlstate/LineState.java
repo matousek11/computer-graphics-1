@@ -35,12 +35,14 @@ public class LineState extends BaseState {
             return;
         }
 
-        Point2D endPoint = shiftIsPressed
-                ? SnapLine.snapLine(new Point2D(positionX, positionY), new Point2D(e.getX(), e.getY()))
-                : new Point2D(e.getX(), e.getY());
+        if (!eWasPressed) {
+            Point2D endPoint = shiftIsPressed
+                    ? SnapLine.snapLine(new Point2D(positionX, positionY), new Point2D(e.getX(), e.getY()))
+                    : new Point2D(e.getX(), e.getY());
 
-        Line line = new Line(positionX, positionY, (int) endPoint.getX(), (int) endPoint.getY(), defaultObjectColor, oldLineThickness);
-        objects.add(line);
+            Line line = new Line(positionX, positionY, (int) endPoint.getX(), (int) endPoint.getY(), defaultObjectColor, oldLineThickness);
+            objects.add(line);
+        }
 
         repaintObjects(objects);
     }
@@ -54,11 +56,12 @@ public class LineState extends BaseState {
 
         clear();
         drawObjects(objects);
-
-        Point2D endPoint = shiftIsPressed
-                ? SnapLine.snapLine(new Point2D(positionX, positionY), new Point2D(e.getX(), e.getY()))
-                : new Point2D(e.getX(), e.getY());
-        liner.draw(raster, positionX, positionY, endPoint.getX(), endPoint.getY(), defaultObjectColor, newLineThickness);
+        if (!eWasPressed) {
+            Point2D endPoint = shiftIsPressed
+                    ? SnapLine.snapLine(new Point2D(positionX, positionY), new Point2D(e.getX(), e.getY()))
+                    : new Point2D(e.getX(), e.getY());
+            liner.draw(raster, positionX, positionY, endPoint.getX(), endPoint.getY(), defaultObjectColor, newLineThickness);
+        }
         panel.repaint();
     }
 }

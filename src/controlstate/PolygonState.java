@@ -5,6 +5,9 @@ import objectdata.Point2D;
 import rasterdata.Raster;
 import rasterops.Liner;
 import rasterops.Polygoner;
+import transforms.Mat3Rot2D;
+import transforms.Mat3Scale2D;
+import transforms.Mat3Transl2D;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -53,7 +56,7 @@ public class PolygonState extends BaseState {
                 for (int i = 0; i < objects.size(); i++) {
                     Object object = objects.get(i);
                     if (object instanceof Polygon polygon) {
-                        objects.set(i, polygon.scale(1.5));
+                        objects.set(i, polygon.transform(new Mat3Scale2D(1.5)));
                     }
                 }
 
@@ -63,7 +66,7 @@ public class PolygonState extends BaseState {
                 for (int i = 0; i < objects.size(); i++) {
                     Object object = objects.get(i);
                     if (object instanceof Polygon polygon) {
-                        objects.set(i, polygon.rotate(0.05));
+                        objects.set(i, polygon.transform(new Mat3Rot2D(0.05)));
                     }
                 }
 
@@ -73,7 +76,7 @@ public class PolygonState extends BaseState {
                 for (int i = 0; i < objects.size(); i++) {
                     Object object = objects.get(i);
                     if (object instanceof Polygon polygon) {
-                        objects.set(i, polygon.translate(20, 20));
+                        objects.set(i, polygon.transform(new Mat3Transl2D(20, 20)));
                     }
                 }
 
