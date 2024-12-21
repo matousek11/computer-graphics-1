@@ -89,9 +89,8 @@ public class NGonState extends BaseState {
             case KeyEvent.VK_S:
                 for (int i = 0; i < objects.size(); i++) {
                     Object object = objects.get(i);
-                    if (object instanceof NGon) {
-                        Polygon nGon = (NGon) object;
-                        objects.set(i, nGon.scale(1.5));
+                    if (object instanceof Polygon polygon) {
+                        objects.set(i, polygon.scale(1.5));
                     }
                 }
                 repaintObjects(objects);
@@ -99,9 +98,8 @@ public class NGonState extends BaseState {
             case KeyEvent.VK_R:
                 for (int i = 0; i < objects.size(); i++) {
                     Object object = objects.get(i);
-                    if (object instanceof NGon) {
-                        Polygon nGon = (NGon) object;
-                        objects.set(i, nGon.rotate(0.05));
+                    if (object instanceof Polygon polygon) {
+                        objects.set(i, polygon.rotate(0.05));
                     }
                 }
                 repaintObjects(objects);
@@ -109,9 +107,8 @@ public class NGonState extends BaseState {
             case KeyEvent.VK_T:
                 for (int i = 0; i < objects.size(); i++) {
                     Object object = objects.get(i);
-                    if (object instanceof NGon) {
-                        Polygon nGon = (NGon) object;
-                        objects.set(i, nGon.translate(20, 20));
+                    if (object instanceof Polygon polygon) {
+                        objects.set(i, polygon.translate(20, 20));
                     }
                 }
                 repaintObjects(objects);
